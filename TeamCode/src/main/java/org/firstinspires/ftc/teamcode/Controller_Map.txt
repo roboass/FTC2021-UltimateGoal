@@ -1,0 +1,5 @@
+GAMEPAD1
+    left stick - movement
+    right stick - rotation
+    left bumper - slow mode
+    right bumper - launch ring
