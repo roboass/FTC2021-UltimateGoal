@@ -48,18 +48,19 @@ public class AutonomousCode extends UsefulFunctions {
         telemetry.update();
 
         Initialise();
+        InitialiseVision();
 
         waitForStart();
         runtime.reset();
 
-        AutonomousMove(1000,  0);
+        /*AutonomousMove(1000,  0);
         sleep(3000);
         AutonomousMove(0,  1000);
         sleep(3000);
         AutonomousMove(-1000, 0);
         sleep(3000);
         AutonomousMove(0, -1000);
-        sleep(3000);
+        sleep(3000);*/
 
         /*while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
