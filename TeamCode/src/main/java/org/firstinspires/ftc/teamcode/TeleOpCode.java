@@ -52,24 +52,64 @@ public class TeleOpCode extends UsefulFunctions {
         runtime.reset();
 
         boolean rightBumperLock = false, rightBumperModeActive = false;
+        boolean leftBumper2Lock = false, leftBumper2ModeActive = false;
 
         while (opModeIsActive()) {
             TeleOpDrive();
 
-            if(gamepad1.right_bumper) {
+            if(gamepad1.right_trigger >= 0.9f) {
+                launchMotor.setPower(1);
+            } else {
+                launchMotor.setPower(0);
+            }
+
+         /*   if(gamepad1.right_bumper) {
                 if(!rightBumperLock && !rightBumperModeActive) {
                     rightBumperModeActive = true;
 
-                    launchServo.setPosition(0.5);
-                } else if(!rightBumperLock && rightBumperModeActive) {
+                    launchServo.setPosition(-0.75);
+                    sleep(1000);
+                    launchServo.setPosition(0);
+                }else if(!rightBumperLock && rightBumperModeActive) {
                     rightBumperModeActive = false;
 
-                    launchServo.setPosition(0);
+                    //launchServo.setPosition(0);
                 }
                 rightBumperLock = true;
             } else if(rightBumperLock) { ///h
                 rightBumperLock = false;
+            } */
+            if(gamepad1.right_bumper)
+            {
+                launchServo.setPosition(-0.25);
+                sleep(1000);
+                launchServo.setPosition(0);
+                sleep(700);
             }
+
+            if(gamepad2.left_bumper) {
+                if(!leftBumper2Lock && !leftBumper2ModeActive) {
+                    leftBumper2ModeActive = true;
+
+                    GrabClawState(true);
+                }else if(!leftBumper2Lock && leftBumper2ModeActive) {
+                    leftBumper2ModeActive = false;
+
+                    GrabClawState(false);
+                }
+                leftBumper2Lock = true;
+            } else if(leftBumper2Lock) { ///h
+                leftBumper2Lock = false;
+            }
+
+            if(gamepad2.y)
+                LiftClawState(0);
+            else if(gamepad2.b)
+                LiftClawState(1);
+            else if(gamepad2.a)
+                LiftClawState(2);
+            else if(gamepad2.x);
+                LiftClawState(3);
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();

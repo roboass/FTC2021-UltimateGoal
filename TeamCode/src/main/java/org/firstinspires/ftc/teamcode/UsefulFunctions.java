@@ -20,12 +20,10 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 public class UsefulFunctions extends LinearOpMode {
-    public DcMotor frontleft, frontright, backleft, backright;
-    public Servo launchServo;
+    public DcMotor frontleft, frontright, backleft, backright, launchMotor;
+    public Servo launchServo, liftClawServo1, liftClawServo2, grabClawServo1, grabClawServo2;
     public OpenCvCamera phoneCam;
     public ImageDetector detector = new ImageDetector();
-
-
 
     public static double ticks_rev = 753.2;
     public static int gear_ratio = 2;
@@ -38,16 +36,18 @@ public class UsefulFunctions extends LinearOpMode {
     public Orientation crtangle = new Orientation();
 
     public void Initialise () {
+        launchMotor = hardwareMap.get(DcMotor.class, "launch_motor");
         frontleft = hardwareMap.get(DcMotor.class, "front_left");
         frontright = hardwareMap.get(DcMotor.class, "front_right");
         backleft = hardwareMap.get(DcMotor.class, "back_left");
         backright = hardwareMap.get(DcMotor.class, "back_right");
 
         launchServo = hardwareMap.get(Servo.class, "launch_servo");
+        /*liftClawServo1 = hardwareMap.get(Servo.class, "lcs1");
+        liftClawServo2 = hardwareMap.get(Servo.class, "lcs2");
+        grabClawServo1 = hardwareMap.get(Servo.class, "gcs1");
+        grabClawServo2 = hardwareMap.get(Servo.class, "gcs2");*/
 
-        /* intakeLeft = hardwareMap.get(DcMotor.class, "intake_left");
-        intakeRight = hardwareMap.get(DcMotor.class, "intake_right");
-        */
         SwitchMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
 
         frontleft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -59,6 +59,8 @@ public class UsefulFunctions extends LinearOpMode {
         frontright.setDirection(DcMotorSimple.Direction.REVERSE);
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        launchMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         //Partea drepta mere in fata
         /*BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -144,11 +146,6 @@ public class UsefulFunctions extends LinearOpMode {
         while ((frontleft.getMode() != x || frontright.getMode() != x || backleft.getMode() != x || backright.getMode() != x) && opModeIsActive());
     }
 
-    /* FUNCTII UITLE GENERALE
-    * https://www.youtube.com/watch?v=qb2HtpBCwlM
-    * Aceste functii sunt folosite in cadrul celorlaltor functii
-    * Practic sunt chestii care le vom apela de mai multe ori cred idk
-    */
     public double in_to_mm (double x) {
         return 25.4 * x;
     }
@@ -191,6 +188,27 @@ public class UsefulFunctions extends LinearOpMode {
         phoneCam.openCameraDevice();
         phoneCam.setPipeline(detector);
         phoneCam.startStreaming(320, 240, OpenCvCameraRotation.SIDEWAYS_LEFT);
+    }
+
+    public void GrabClawState(boolean state)
+    {
+        /*if(state)
+        {
+           grabClawServo1.setPosition(0.25);
+           grabClawServo2.setPosition(0.25);
+        }
+        else
+        {
+            grabClawServo1.setPosition(0);
+            grabClawServo2.setPosition(0);
+        }*/
+    }
+
+    public void LiftClawState(int state) ///0 - deasupra lansator, 1- tinut wobble goal, 2 - apiucat wobble, 3- inel
+    {
+        /*float[] values = {0f, 0.051f, 0.12f, 0.20f};
+        liftClawServo1.setPosition(values[state]);
+        liftClawServo2.setPosition(values[state]);*/
     }
 
     @Override

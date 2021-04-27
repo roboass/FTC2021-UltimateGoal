@@ -36,6 +36,17 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvPipeline;
 
 @Autonomous(name="AutonomousCode", group="Linear Opmode")
 //@Disabled
@@ -53,6 +64,8 @@ public class AutonomousCode extends UsefulFunctions {
         waitForStart();
         runtime.reset();
 
+
+
         /*AutonomousMove(1000,  0);
         sleep(3000);
         AutonomousMove(0,  1000);
@@ -62,9 +75,9 @@ public class AutonomousCode extends UsefulFunctions {
         AutonomousMove(0, -1000);
         sleep(3000);*/
 
-        /*while (opModeIsActive()) {
+        while (opModeIsActive()) {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.update();
-        }*/
+        }
     }
 }
