@@ -2,4 +2,13 @@ GAMEPAD1
     left stick - movement
     right stick - rotation
     left bumper - slow mode
-    right bumper - launch ring
+GAMEPAD2
+    right bumper - launch servo movement (launch ring)
+    right trigger - launch motor movement
+    left bumper - apuca inelele cu grab claw
+    butoane de control ridicare coborare claw: 0 - deasupra lansator, 1 - tinut wobble goal, 2 - apucat wobble, 3 - inel
+        a - creste claw state
+        y - scade claw state
+        (obs: mereu sunt intre 0 si 36 // sunt invers a si y pentru ca stateurile incep de sus nu stiu daca are sens ma rog)
+    dpad-up - adjustare unghi lansator in sus
+    dpad-left - adjustare unghi lansator in jos

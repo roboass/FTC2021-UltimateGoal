@@ -48,43 +48,36 @@ public class TeleOpCode extends UsefulFunctions {
 
         Initialise();
 
+        telemetry.addData("Launch Servo position", launchServo.getPosition());
+        telemetry.update();
+
         waitForStart();
         runtime.reset();
 
-        boolean rightBumperLock = false, rightBumperModeActive = false;
+        boolean dpadupLock = false, dpaddownLock = false;
+        boolean ylock = false, alock = false;
+        boolean rightBumperLock = false;
         boolean leftBumper2Lock = false, leftBumper2ModeActive = false;
 
         while (opModeIsActive()) {
             TeleOpDrive();
 
-            if(gamepad1.right_trigger >= 0.9f) {
+            if(gamepad2.right_trigger >= 0.9f) {
                 launchMotor.setPower(1);
             } else {
                 launchMotor.setPower(0);
             }
 
-         /*   if(gamepad1.right_bumper) {
-                if(!rightBumperLock && !rightBumperModeActive) {
-                    rightBumperModeActive = true;
 
-                    launchServo.setPosition(-0.75);
-                    sleep(1000);
-                    launchServo.setPosition(0);
-                }else if(!rightBumperLock && rightBumperModeActive) {
-                    rightBumperModeActive = false;
-
-                    //launchServo.setPosition(0);
+            if(gamepad2.right_bumper) {
+                if(!rightBumperLock) {
+                    rightBumperLock = true;
+                    launchServoThread.start();
                 }
-                rightBumperLock = true;
-            } else if(rightBumperLock) { ///h
+
+            }
+            else if(rightBumperLock) {
                 rightBumperLock = false;
-            } */
-            if(gamepad1.right_bumper)
-            {
-                launchServo.setPosition(-0.25);
-                sleep(1000);
-                launchServo.setPosition(0);
-                sleep(700);
             }
 
             if(gamepad2.left_bumper) {
@@ -102,17 +95,47 @@ public class TeleOpCode extends UsefulFunctions {
                 leftBumper2Lock = false;
             }
 
-            if(gamepad2.y)
-                LiftClawState(0);
-            else if(gamepad2.b)
-                LiftClawState(1);
-            else if(gamepad2.a)
-                LiftClawState(2);
-            else if(gamepad2.x);
-                LiftClawState(3);
+            if(gamepad2.a) {
+                if(!alock) {
+                    alock = true;
+                    LiftClawState(currentClawState - 1);
+                }
+            } else if(alock) {
+                alock = false;
+            }
+
+            if(gamepad2.y) {
+                if(!ylock) {
+                    ylock = true;
+                    LiftClawState(currentClawState + 1);
+                }
+            } else if(ylock) {
+                ylock = false;
+            }
+
+            if(gamepad2.dpad_up) {
+                if(!dpadupLock) {
+                    dpadupLock = true;
+                    AddToLaunchAngle(5);
+                }
+            } else if(dpadupLock) {
+                dpadupLock = false;
+            }
+
+            if(gamepad2.dpad_down) {
+                if(!dpaddownLock) {
+                    dpaddownLock = true;
+                    AddToLaunchAngle(-5);
+                }
+            } else if(dpaddownLock) {
+                dpaddownLock = false;
+            }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
+            telemetry.addData("Current claw state:", currentClawState);
             telemetry.update();
         }
+        //AddToLaunchAngle(currentLaunchAngle);
+
     }
 }
