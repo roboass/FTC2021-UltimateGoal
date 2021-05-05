@@ -25,7 +25,7 @@ public class UsefulFunctions extends LinearOpMode {
     public OpenCvCamera phoneCam;
     public ImageDetector detector = new ImageDetector();
 
-    public static double currentLaunchAngle = 0;
+    public static double currentLaunchAngle = 0, previousLaunchAngle = 0;
     public static int currentClawState = 0;
 
     public static double ticks_rev = 753.2;
@@ -48,6 +48,17 @@ public class UsefulFunctions extends LinearOpMode {
         }
     };
 
+    public Thread clawAngleThread = new Thread() {
+        public void run() {
+            try {
+                Thread.sleep(1000);
+                AddToLaunchAngle(previousLaunchAngle);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     //public BNO055IMU gyro;
     public Orientation crtangle = new Orientation();
 
@@ -64,8 +75,8 @@ public class UsefulFunctions extends LinearOpMode {
 
         liftClawServo1 = hardwareMap.get(Servo.class, "lcs1");
         liftClawServo2 = hardwareMap.get(Servo.class, "lcs2");
-        /*grabClawServo1 = hardwareMap.get(Servo.class, "gcs1");
-        grabClawServo2 = hardwareMap.get(Servo.class, "gcs2");*/
+        grabClawServo1 = hardwareMap.get(Servo.class, "gcs1");
+        grabClawServo2 = hardwareMap.get(Servo.class, "gcs2");
 
         SwitchMotorModes(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -79,13 +90,16 @@ public class UsefulFunctions extends LinearOpMode {
         backleft.setDirection(DcMotorSimple.Direction.REVERSE);
         backright.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        angleLaunchServo1.setDirection(Servo.Direction.REVERSE);
-        angleLaunchServo2.setDirection(Servo.Direction.FORWARD);
+        angleLaunchServo1.setDirection(Servo.Direction.FORWARD);
+        angleLaunchServo2.setDirection(Servo.Direction.REVERSE);
         launchServo.setDirection(Servo.Direction.FORWARD);
         launchMotor.setDirection(DcMotorSimple.Direction.FORWARD);
 
         liftClawServo1.setDirection(Servo.Direction.REVERSE);
         liftClawServo2.setDirection(Servo.Direction.FORWARD);
+
+        grabClawServo1.setDirection(Servo.Direction.REVERSE);
+        grabClawServo2.setDirection(Servo.Direction.FORWARD);
 
         currentLaunchAngle = 0;
         currentClawState = 0;
@@ -221,22 +235,32 @@ public class UsefulFunctions extends LinearOpMode {
     }
 
     public void GrabClawState(boolean state) {
-        /*if(state)
+        if(state)
         {
-           grabClawServo1.setPosition(0.15);
-           grabClawServo2.setPosition(0.15);
+           grabClawServo1.setPosition(0.25);
+           grabClawServo2.setPosition(0.25);
         }
         else
         {
-            grabClawServo1.setPosition(-0.15);
-            grabClawServo2.setPosition(-0.15);
-        }*/
+            grabClawServo1.setPosition(0);
+            grabClawServo2.setPosition(0);
+            if(currentClawState == 0)
+            {
+                clawAngleThread.start();
+            }
+        }
     }
 
     public void LiftClawState(int state) ///0 - deasupra lansator, 1 - tinut wobble goal, 2 - apucat wobble, 3 - inel
     {
         if (state < 0 || state > 3) return;
-        double[] values = new double[]{0.07, 0.3, 0.7, 0.8};
+
+        if(state == 0)
+        {
+            previousLaunchAngle = currentLaunchAngle;
+            AddToLaunchAngle(-currentLaunchAngle);
+        }
+        double[] values = new double[]{0.15, 0.54, 0.82, 0.9};
 
         liftClawServo1.setPosition(values[state]);// - values[currentClawState]);
         liftClawServo2.setPosition(values[state]);// - values[currentClawState]);
@@ -246,10 +270,10 @@ public class UsefulFunctions extends LinearOpMode {
 
     public void AddToLaunchAngle(double angle)
     {
-        if(currentLaunchAngle + angle <= 90) {
-            angleLaunchServo1.setPosition(anglesToPercent(-angle));
-            angleLaunchServo2.setPosition(anglesToPercent(-angle));
+        if(currentLaunchAngle + angle <= 90 && currentLaunchAngle + angle >= 0) {
             currentLaunchAngle += angle;
+            angleLaunchServo1.setPosition(anglesToPercent(currentLaunchAngle));
+            angleLaunchServo2.setPosition(anglesToPercent(currentLaunchAngle));
         }
     }
 

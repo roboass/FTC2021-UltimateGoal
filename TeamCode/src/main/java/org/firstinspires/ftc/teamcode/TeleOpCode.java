@@ -132,7 +132,7 @@ public class TeleOpCode extends UsefulFunctions {
             }
 
             telemetry.addData("Status", "Run Time: " + runtime.toString());
-            telemetry.addData("Current claw state:", currentClawState);
+            telemetry.addData("Current launch angle:", currentLaunchAngle);
             telemetry.update();
         }
         //AddToLaunchAngle(currentLaunchAngle);
